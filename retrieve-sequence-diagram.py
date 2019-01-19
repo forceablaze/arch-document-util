@@ -22,6 +22,8 @@ from openpyxl.worksheet.write_only import WriteOnlyCell
 
 from pathlib import Path
 from utils import isSequenceMatchPattern
+from utils import isUTF8
+from utils import isShift_JIS
 
 # report title color
 REPORT_TITLE_COLOR = 'B7DEE8'
@@ -78,7 +80,11 @@ def generateReport(resultDict, reportPath):
 
     for fileName in sorted(resultDict):
         data = []
-        data.append('{}'.format(Path(fileName).stem))
+        name = Path(fileName).stem
+        if isUTF8(name):
+            data.append(u'{}'.format(name.decode('utf-8')))
+        elif isShift_JIS(name):
+            data.append(u'{}'.format(name.decode('shift-jis')))
 
         idCount = 0
         tbdCount = 0
